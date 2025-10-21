@@ -21,7 +21,7 @@ void GL::Camera::matrix(GL::Shader* shader, std::string unif) {
 
 	glm::mat4 view = glm::mat4(1.0f);
 
-	view = glm::lookAt(position, position + orientation, Vec3(0.0, 1.0, 0.0));
+	view = glm::lookAt(position, position + orientation, glm::vec3(0.0, 1.0, 0.0));
 
 	glUniformMatrix4fv(glGetUniformLocation(shader->getID(), unif.c_str()), 1, GL_FALSE, glm::value_ptr(projection * view));
 

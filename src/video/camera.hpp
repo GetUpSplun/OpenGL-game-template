@@ -17,8 +17,8 @@ enum CameraType {ORTHOGRAPHIC, PERSPECTIVE};
 namespace GL {
 	class Camera {
 		public:
-			Vec3 position = Vec3(0.0, 0.0, 1.0);
-			Vec3 orientation = Vec3(0.0, 0.0, -1.0);
+			glm::vec3 position = glm::vec3(0.0, 0.0, 1.0);
+			glm::vec3 orientation = glm::vec3(0.0, 0.0, -1.0);
 
 			Camera(CameraType type, GL::Window* window, float FOVdeg, float near_plane, float far_plane);
 			~Camera();

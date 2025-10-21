@@ -26,7 +26,7 @@ namespace GL {
 			Text(FT_Library ft, std::string font_path);
 			~Text();
 
-			void draw(GL::Shader* shader, std::string text, Vec3 position, ColorRGB color);
+			void draw(GL::Shader* shader, std::string text, glm::vec3 position, ColorRGB color);
 			void setSize(int size);
 
 		private:

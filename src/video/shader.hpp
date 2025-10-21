@@ -7,6 +7,8 @@
 
 #include <GL/glew.h>
 
+std::string getFileContents(std::string filepath);
+
 namespace GL {
 
 	class Shader {

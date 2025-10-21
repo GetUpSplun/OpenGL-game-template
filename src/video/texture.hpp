@@ -12,7 +12,8 @@ namespace GL {
 	
 	class Texture {
 		public:
-			static GLuint loadTexture(std::filesystem::path filepath, GLint filter_param, GLenum format);
+			static GLuint loadTexture(std::filesystem::path filepath, GLint filter_param);
+			static GLuint loadTexture(std::filesystem::path filepath, GLint filter_param, GLuint slot);
 
 		private:
 			GLuint ID;

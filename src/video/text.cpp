@@ -70,7 +70,7 @@ GL::Text::~Text() {
 	FT_Done_Face(face);
 }
 
-void GL::Text::draw(GL::Shader* shader, std::string text, Vec3 position, ColorRGB color) {
+void GL::Text::draw(GL::Shader* shader, std::string text, glm::vec3 position, ColorRGB color) {
 	glUseProgram(shader->getID());
 
 	glUniform3f(glGetUniformLocation(shader->getID(), "texColor"), color.r, color.g, color.b);

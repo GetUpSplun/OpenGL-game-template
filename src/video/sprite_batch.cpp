@@ -48,7 +48,7 @@ GL::SpriteBatch::~SpriteBatch() {
 	glDeleteBuffers(1, &EBO);
 }
 
-void GL::SpriteBatch::draw(const Vec3 position, Vec2 size, const Vec3 direction, const float angle, GLuint texture, ColorRGB color) {
+void GL::SpriteBatch::draw(const glm::vec3 position, glm::vec2 size, const glm::vec3 direction, const float angle, GLuint texture, ColorRGB color) {
 	GL::Vertex v1, v2, v3, v4;
 
 	v1.position[0] = position.x - (size.x/2);
@@ -94,7 +94,7 @@ void GL::SpriteBatch::draw(const Vec3 position, Vec2 size, const Vec3 direction,
 	// memcpy(vertices, quad.data(), quad.size() * sizeof(Vertex));
 }
 
-void GL::SpriteBatch::draw(const Vec3 position, Vec2 size, const Vec3 direction, const float angle, GLuint texture, Vec2 tile_count, Vec2 tile_offset, ColorRGB color) {
+void GL::SpriteBatch::draw(const glm::vec3 position, glm::vec2 size, const glm::vec3 direction, const float angle, GLuint texture, glm::vec2 tile_count, glm::vec2 tile_offset, ColorRGB color) {
 	GL::Vertex v1, v2, v3, v4;
 
 	v1.position[0] = position.x - (size.x/2);

@@ -20,8 +20,8 @@ namespace GL {
 			SpriteBatch(int maxQuadCount);
 			~SpriteBatch();
 
-			void draw(Vec3 position, Vec2 size, Vec3 direction, float angle, GLuint texture, ColorRGB color);
-			void draw(Vec3 position, Vec2 size, Vec3 direction, float angle, GLuint texture, Vec2 tiles_count, Vec2 tile_position, ColorRGB color);
+			void draw(glm::vec3 position, glm::vec2 size, glm::vec3 direction, float angle, GLuint texture, ColorRGB color);
+			void draw(glm::vec3 position, glm::vec2 size, glm::vec3 direction, float angle, GLuint texture, glm::vec2 tiles_count, glm::vec2 tile_position, ColorRGB color);
 
 			void renderBatch(GL::Shader* shader);
 
