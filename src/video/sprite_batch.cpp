@@ -16,8 +16,6 @@ GL::SpriteBatch::SpriteBatch(int maxQuadCount) {
 			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, color));
 			glEnableVertexArrayAttrib(VBO, 2);
 			glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoords));
-			glEnableVertexArrayAttrib(VBO, 3);
-			glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texID));
 
 			GLuint indices[(maxQuadCount * 6)];
 			int offset = 0;
@@ -48,7 +46,13 @@ GL::SpriteBatch::~SpriteBatch() {
 	glDeleteBuffers(1, &EBO);
 }
 
-void GL::SpriteBatch::draw(const glm::vec3 position, glm::vec2 size, const glm::vec3 direction, const float angle, GLuint texture, ColorRGB color) {
+void GL::SpriteBatch::draw(const glm::vec3 position, glm::vec2 size, const glm::vec3 direction, const float angle, GLuint texture, ColorRGB color, Shader* shader) {
+	if (this->texture != texture) {
+		this->renderBatch(shader);
+
+		this->texture = texture;
+	}
+
 	GL::Vertex v1, v2, v3, v4;
 
 	v1.position[0] = position.x - (size.x/2);
@@ -82,19 +86,19 @@ void GL::SpriteBatch::draw(const glm::vec3 position, glm::vec2 size, const glm::
 	v4.texCoords[0] = 1.0;
 	v4.texCoords[1] = 0.0;
 
-	v1.texID = v2.texID = v3.texID = v4.texID = textures.size();
-
 	vertices.push_back(v1);
 	vertices.push_back(v2);
 	vertices.push_back(v3);
 	vertices.push_back(v4);
-
-	textures.push_back(texture);
-	// std::array<Vertex, 4> quad = {v1, v2, v3, v4};
-	// memcpy(vertices, quad.data(), quad.size() * sizeof(Vertex));
 }
 
-void GL::SpriteBatch::draw(const glm::vec3 position, glm::vec2 size, const glm::vec3 direction, const float angle, GLuint texture, glm::vec2 tile_count, glm::vec2 tile_offset, ColorRGB color) {
+void GL::SpriteBatch::draw(const glm::vec3 position, glm::vec2 size, const glm::vec3 direction, const float angle, GLuint texture, glm::vec2 tile_count, glm::vec2 tile_offset, ColorRGB color, Shader* shader) {
+	if (this->texture != texture) {
+		this->renderBatch(shader);
+
+		this->texture = texture;
+	}
+
 	GL::Vertex v1, v2, v3, v4;
 
 	v1.position[0] = position.x - (size.x/2);
@@ -128,22 +132,18 @@ void GL::SpriteBatch::draw(const glm::vec3 position, glm::vec2 size, const glm::
 	v4.texCoords[0] = tile_offset.x * (1.0 / tile_count.x) + (1.0 / tile_count.x);
 	v4.texCoords[1] = tile_offset.y * (1.0 / tile_count.y);
 
-	v1.texID = v2.texID = v3.texID = v4.texID = textures.size();
-
 	vertices.push_back(v1);
 	vertices.push_back(v2);
 	vertices.push_back(v3);
 	vertices.push_back(v4);
-
-	textures.push_back(texture);
 }
 
 void GL::SpriteBatch::renderBatch(GL::Shader* shader) {
 	glUseProgram(shader->getID());
 
-	for (int i = 0; i < textures.size(); ++i) {
-		glBindTextureUnit(i, textures[i]);
-	}
+	glActiveTexture(GL_TEXTURE0);
+
+	glBindTexture(GL_TEXTURE_2D, texture);
 
 	glm::mat4 transform = glm::mat4(1.0f);
 	transform = glm::translate(transform, Vec3(0.0, 0.0, 0.0));
@@ -151,18 +151,16 @@ void GL::SpriteBatch::renderBatch(GL::Shader* shader) {
 
 	glUniformMatrix4fv(glGetUniformLocation(shader->getID(), "model"), 1, GL_FALSE, glm::value_ptr(transform));
 
-	int samplers[2] = {0, 1};
-	glUniform1iv(glGetUniformLocation(shader->getID(), "textures"), 2, samplers);
+	glUniform1i(glGetUniformLocation(shader->getID(), "texID"), 0);
 
 	glBindVertexArray(VAO);
 
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		// glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(Vertex), vertices.data());
 
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 
-				glDrawElements(GL_TRIANGLES, 50, GL_UNSIGNED_INT, 0);
+				glDrawElements(GL_TRIANGLES, (vertices.size()/4)*6, GL_UNSIGNED_INT, 0);
 
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
@@ -170,8 +168,10 @@ void GL::SpriteBatch::renderBatch(GL::Shader* shader) {
 
 	glBindVertexArray(0);
 
+	glBindTexture(GL_TEXTURE0, 0);
+
 	glUseProgram(0);
 
+	glDeleteTextures(1, &texture);
 	vertices.clear();
-	textures.clear();
 }

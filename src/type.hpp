@@ -26,7 +26,6 @@ namespace GL {
 		GLfloat position[3];
 		GLfloat color[3];
 		GLfloat texCoords[2];
-		GLfloat texID;
 	};
 
 }
