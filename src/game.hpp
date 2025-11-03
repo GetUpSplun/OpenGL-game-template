@@ -6,6 +6,9 @@
 #include <SDL2/SDL.h>
 #include <freetype2/ft2build.h>
 #include FT_FREETYPE_H
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_opengl3.h"
+#include "imgui/imgui_impl_sdl2.h"
 
 #include "video/camera.hpp"
 #include "video/window.hpp"
@@ -28,5 +31,6 @@ class MainGame {
 		void processInput();
 		void update();
 		void render();
+		void renderImGui();
 
 };
